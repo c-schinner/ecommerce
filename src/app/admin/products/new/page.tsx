@@ -4,6 +4,7 @@ export default function NewProductPage() {
     return (
         <>
             <PageHeader>Add Product</PageHeader>
+            <ProductForm />
         </>
     );
 }
