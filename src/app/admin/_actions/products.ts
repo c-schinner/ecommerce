@@ -17,11 +17,11 @@ const addSchema = z.object({
 })
 
 
-export async function addProduct(formData: FormData): Promise<void> {
+export async function addProduct(prevState: unknown, formData: FormData) {
     const result = addSchema.safeParse(Object.fromEntries(formData.entries()))
-    if (!result.success) {
-        console.log(result.error.formErrors.fieldErrors);
-        return;
+    if (result.success === false) {
+        
+        return result.error.formErrors.fieldErrors
     }
 
     const data = result.data

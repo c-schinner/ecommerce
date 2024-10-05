@@ -7,15 +7,20 @@ import { Textarea } from "@/components/ui/textarea";
 import { formatCurrency } from "@/lib/formatters";
 import { useState } from "react";
 import { addProduct } from "../../_actions/products";
+import { useFormState, useFormStatus } from "react-dom";
 
 export function ProductForm() {
+    const [error, action] = useFormState(addProduct, {});
     const [priceInCents, setPriceInCents] = useState<number>();
 
     return (
-        <form action={addProduct} className="space-y-8 space-x-4">
+        <form action={action} className="space-y-8 space-x-4">
             <div className="space-y-2 ml-4">
                 <Label htmlFor="name">Name</Label>
                 <Input type="text" id="name" name="name" required />
+                {error.name && (
+                    <div className="text-destructive">{error.name}</div>
+                )}
             </div>
             <div className="space-y-2">
                 <Label htmlFor="priceInCents">Price In Cents</Label>
@@ -45,7 +50,16 @@ export function ProductForm() {
                     <Input type="file" id="image" name="image" required />
                 </div>
             </div>
-            <Button type="submit">Save</Button>
+            <SubmitButton />
         </form>
+    );
+}
+
+function SubmitButton() {
+    const { pending } = useFormStatus();
+    return (
+        <Button type="submit" disabled={pending}>
+            {pending ? "Saving..." : "Save"}
+        </Button>
     );
 }
