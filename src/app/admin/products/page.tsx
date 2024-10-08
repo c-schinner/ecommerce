@@ -101,7 +101,11 @@ async function ProductsTable() {
                                         </a>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem asChild>
-                                        <Link href=""></Link>
+                                        <Link
+                                            href={`/admin/products/${product.id}/edit`}
+                                        >
+                                            Edit
+                                        </Link>
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
