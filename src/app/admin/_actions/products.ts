@@ -51,7 +51,6 @@ export async function updateProduct(id: string, prevState: unknown, formData: Fo
         where: { id },
         data: {
         name: data.name,
-        isAvailableForPurchase: false,
         description: data.description,
         priceInCents: data.priceInCents,
         filePath,
