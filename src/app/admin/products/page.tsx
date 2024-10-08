@@ -18,6 +18,11 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+    ActiveToggleDropdownItem,
+    DeleteDropdownItem,
+} from "./_components/ProductActions";
+import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu";
 
 export default function AdminProductsPage() {
     return (
@@ -107,6 +112,17 @@ async function ProductsTable() {
                                             Edit
                                         </Link>
                                     </DropdownMenuItem>
+                                    <ActiveToggleDropdownItem
+                                        id={product.id}
+                                        isAvailableForPurchase={
+                                            product.isAvailableForPurchase
+                                        }
+                                    />
+                                    <DropdownMenuSeparator />
+                                    <DeleteDropdownItem
+                                        id={product.id}
+                                        disabled={product._count.orders > 0}
+                                    />
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </TableCell>
