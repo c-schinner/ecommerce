@@ -1,15 +1,15 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/formatters";
 import { useState } from "react";
 import { addProduct, updateProduct } from "../../_actions/products";
 import { useFormState, useFormStatus } from "react-dom";
 import { Product } from "@prisma/client";
 import Image from "next/image";
-import { Input } from "@/app/components/ui/input";
 import { Label } from "@/app/components/ui/label";
+import { Input } from "@/app/components/ui/input";
 import { Textarea } from "@/app/components/ui/textarea";
+import { Button } from "@/app/components/ui/button";
 
 export function ProductForm({ product }: { product?: Product | null }) {
     const [error, action] = useFormState(

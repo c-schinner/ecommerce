@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
 import db from "@/db/db";
 import { Product } from "@prisma/client";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { Button } from "../components/ui/button";
 
 function getMostPopularProducts() {
     return db.product.findMany({

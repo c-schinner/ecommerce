@@ -1,12 +1,12 @@
 "use client";
 
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useTransition } from "react";
 import {
     deleteProduct,
     toggleProductAvailability,
 } from "../../_actions/products";
 import { useRouter } from "next/navigation";
+import { DropdownMenuItem } from "@/app/components/ui/dropdown-menu";
 
 export function ActiveToggleDropdownItem({
     id,
