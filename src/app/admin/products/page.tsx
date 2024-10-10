@@ -1,14 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "../_components/PageHeader";
 import Link from "next/link";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
 import db from "@/db/db";
 import { CheckCircle2, MoreVertical, XCircle } from "lucide-react";
 import { formatCurrency, formatNumber } from "@/lib/formatters";
@@ -23,6 +15,14 @@ import {
     DeleteDropdownItem,
 } from "./_components/ProductActions";
 import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/app/components/ui/table";
 
 export default function AdminProductsPage() {
     return (
