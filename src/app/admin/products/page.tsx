@@ -8,6 +8,7 @@ import {
     DeleteDropdownItem,
 } from "./_components/ProductActions";
 import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu";
+import { Button } from "@/app/components/ui/button";
 import {
     Table,
     TableBody,
@@ -22,7 +23,6 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/app/components/ui/dropdown-menu";
-import { Button } from "@/app/components/ui/button";
 
 export default function AdminProductsPage() {
     return (
