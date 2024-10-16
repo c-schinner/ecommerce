@@ -1,5 +1,6 @@
 "use client";
 
+import { formatCurrency } from "@/lib/formatters";
 import {
     Elements,
     PaymentElement,
@@ -34,6 +35,15 @@ export function CheckoutForm({ product, clientSecret }: CheckoutFormProps) {
                             fill
                             alt={product.name}
                         />
+                    </div>
+                    <div>
+                        <div className="text-lg">
+                            {formatCurrency(product.priceInCents / 100)}
+                        </div>
+                        <h1 className="text-2xl font-bold">{product.name}</h1>
+                        <div className="line-clamp-3 text-muted-foreground">
+                            {product.description}
+                        </div>
                     </div>
                 </div>
                 <Elements options={{ clientSecret }} stripe={stripePromise}>
