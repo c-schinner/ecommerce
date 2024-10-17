@@ -12,12 +12,14 @@ import {
 import { formatCurrency } from "@/lib/formatters";
 import {
     Elements,
+    LinkAuthenticationElement,
     PaymentElement,
     useElements,
     useStripe,
 } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import Image from "next/image";
+import { FormEvent, useState } from "react";
 
 type CheckoutFormProps = {
     product: {
@@ -67,26 +69,69 @@ export function CheckoutForm({ product, clientSecret }: CheckoutFormProps) {
 function Form({ priceInCents }: { priceInCents: number }) {
     const stripe = useStripe();
     const elements = useElements();
+    const [isLoading, setIsLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState<string>();
+    const [email, setEmail] = useState<string>();
+
+    function handleSubmit(e: FormEvent) {
+        e.preventDefault();
+
+        if (stripe == null || elements == null) return;
+
+        setIsLoading(true);
+
+        stripe
+            .confirmPayment({
+                elements,
+                confirmParams: {
+                    return_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/stripe/purchase-success`,
+                },
+            })
+            .then(({ error }) => {
+                if (
+                    error.type === "card_error" ||
+                    error.type === "validation_error"
+                ) {
+                    setErrorMessage(error.message);
+                } else {
+                    setErrorMessage("An unkown error occured");
+                }
+            })
+            .finally(() => setIsLoading(false));
+    }
 
     return (
-        <form>
+        <form onSubmit={handleSubmit}>
             <Card>
                 <CardHeader>
                     <CardTitle>Checkout</CardTitle>
-                    <CardDescription className="text-destructive">
-                        Error
-                    </CardDescription>
+                    {errorMessage && (
+                        <CardDescription className="text-destructive">
+                            {errorMessage}
+                        </CardDescription>
+                    )}
                 </CardHeader>
                 <CardContent>
                     <PaymentElement />
+                    <div className="mt-4">
+                        <LinkAuthenticationElement
+                            onChange={(e) => setEmail(e.value.email)}
+                        />
+                    </div>
                 </CardContent>
                 <CardFooter>
                     <Button
                         className="w-full"
                         size="lg"
-                        disabled={stripe == null || elements == null}
+                        disabled={
+                            stripe == null || elements == null || isLoading
+                        }
                     >
-                        Purchase - {formatCurrency(priceInCents / 100)}
+                        {isLoading
+                            ? "Purchasing..."
+                            : `Purchase - ${formatCurrency(
+                                  priceInCents / 100
+                              )}`}
                     </Button>
                 </CardFooter>
             </Card>
