@@ -1,5 +1,14 @@
 "use client";
 
+import { Button } from "@/app/components/ui/button";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/app/components/ui/card";
 import { formatCurrency } from "@/lib/formatters";
 import {
     Elements,
@@ -34,6 +43,7 @@ export function CheckoutForm({ product, clientSecret }: CheckoutFormProps) {
                             src={product.imagePath}
                             fill
                             alt={product.name}
+                            className="object-cover"
                         />
                     </div>
                     <div>
@@ -47,15 +57,39 @@ export function CheckoutForm({ product, clientSecret }: CheckoutFormProps) {
                     </div>
                 </div>
                 <Elements options={{ clientSecret }} stripe={stripePromise}>
-                    <Form />
+                    <Form priceInCents={product.priceInCents} />
                 </Elements>
             </div>
         </>
     );
 }
 
-function Form() {
+function Form({ priceInCents }: { priceInCents: number }) {
     const stripe = useStripe();
     const elements = useElements();
-    return <PaymentElement />;
+
+    return (
+        <form>
+            <Card>
+                <CardHeader>
+                    <CardTitle>Checkout</CardTitle>
+                    <CardDescription className="text-destructive">
+                        Error
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <PaymentElement />
+                </CardContent>
+                <CardFooter>
+                    <Button
+                        className="w-full"
+                        size="lg"
+                        disabled={stripe == null || elements == null}
+                    >
+                        Purchase - {formatCurrency(priceInCents / 100)}
+                    </Button>
+                </CardFooter>
+            </Card>
+        </form>
+    );
 }
