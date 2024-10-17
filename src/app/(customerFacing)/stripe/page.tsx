@@ -55,7 +55,9 @@ export default async function SuccessPage({
                                 href={`/products/download/${await createDownloadVerification(
                                     product.id
                                 )}`}
-                            ></a>
+                            >
+                                Download
+                            </a>
                         ) : (
                             <Link href={`/products/${product.id}/purchase`}>
                                 Try Again
