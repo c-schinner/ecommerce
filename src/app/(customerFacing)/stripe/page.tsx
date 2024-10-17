@@ -2,6 +2,7 @@ import { Button } from "@/app/components/ui/button";
 import db from "@/db/db";
 import { formatCurrency } from "@/lib/formatters";
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import Stripe from "stripe";
 
@@ -49,10 +50,31 @@ export default async function SuccessPage({
                         {product.description}
                     </div>
                     <Button className="mt-4" size="lg" asChild>
-                        {isSuccess}
+                        {isSuccess ? (
+                            <a
+                                href={`/products/download/${await createDownloadVerification(
+                                    product.id
+                                )}`}
+                            ></a>
+                        ) : (
+                            <Link href={`/products/${product.id}/purchase`}>
+                                Try Again
+                            </Link>
+                        )}
                     </Button>
                 </div>
             </div>
         </div>
     );
+}
+
+async function createDownloadVerification(productId: string) {
+    return (
+        await db.downloadVerification.create({
+            data: {
+                productId,
+                expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24),
+            },
+        })
+    ).id;
 }
