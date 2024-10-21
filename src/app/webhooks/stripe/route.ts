@@ -6,6 +6,7 @@ import Stripe from "stripe"
 // Im going to skip for now, because we dont really need this functionality at the moment.
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
+const resend = new Resend()
 
 export async function POST(req: NextRequest) {
     const event = await stripe.webhooks.constructEvent(
@@ -21,6 +22,24 @@ export async function POST(req: NextRequest) {
         const pricePaidInCents = charge.amount
 
         const product = await db.product.findUnique({ where: { id: productId }})
-        if (product == null || email == null) return new NextResponse("Bad Request")
+        if (product == null || email == null) {
+            return new NextResponse("Bad Request", { status: 400 })
+        }
+
+        const userFields = {
+            email,
+            orders: { create: { productId, pricePaidInCents } },
+        }
+        const { orders: [order] } = await db.user.upsert({ 
+            where: { email },
+            create: userFields,
+            update: userFields,
+            select: { orders: { orderBy: { createdAt: "desc"}, take: 1}}
+        })
+
+        const downloadVerification = await db.downloadVerification.create({ 
+            data: { 
+                productId, 
+                expiresAt: new Date(Date.now() * 1000 * 60 * 60 * 24)}})
     }
 }
