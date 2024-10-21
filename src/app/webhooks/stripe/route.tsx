@@ -5,6 +5,7 @@ import { Resend } from "resend";
 
 // Go to the stripe page and follow the create local listener directions to complete this.
 // Im going to skip for now, because we dont really need this functionality at the moment.
+// We need to get the webhooks setup correctly for stripe to process a "payment"
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 const resend = new Resend(process.env.RESEND_API_KEY as string);
