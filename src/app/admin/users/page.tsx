@@ -1,10 +1,7 @@
 import { PageHeader } from "../_components/PageHeader";
-import Link from "next/link";
 import db from "@/db/db";
 import { MoreVertical } from "lucide-react";
 import { formatCurrency, formatNumber } from "@/lib/formatters";
-import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu";
-import { Button } from "@/app/components/ui/button";
 import {
     Table,
     TableBody,
@@ -16,16 +13,12 @@ import {
 import {
     DropdownMenu,
     DropdownMenuContent,
-    DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/app/components/ui/dropdown-menu";
-import {
-    ActiveToggleDropdownItem,
-    DeleteDropdownItem,
-} from "../products/_components/ProductActions";
+import { DeleteDropdownItem } from "../products/_components/ProductActions";
 
 function getUsers() {
-    return db.product.findMany({
+    return db.user.findMany({
         select: {
             id: true,
             email: true,
@@ -62,7 +55,7 @@ async function UsersTable() {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {users.map((user) => {
+                {users.map((user) => (
                     <TableRow key={user.id}>
                         <TableCell>{user.email}</TableCell>
                         <TableCell>
@@ -80,11 +73,18 @@ async function UsersTable() {
                             <DropdownMenu>
                                 <DropdownMenuTrigger>
                                     <MoreVertical />
+                                    <span className="sr-only">Actions</span>
                                 </DropdownMenuTrigger>
+                                <DropdownMenuContent>
+                                    <DeleteDropdownItem
+                                        id={user.id}
+                                        disabled={false}
+                                    />
+                                </DropdownMenuContent>
                             </DropdownMenu>
                         </TableCell>
-                    </TableRow>;
-                })}
+                    </TableRow>
+                ))}
             </TableBody>
         </Table>
     );
