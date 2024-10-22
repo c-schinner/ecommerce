@@ -15,7 +15,6 @@ import {
     DropdownMenuContent,
     DropdownMenuTrigger,
 } from "@/app/components/ui/dropdown-menu";
-import { DeleteDropdownItem } from "../products/_components/ProductActions";
 
 function getUsers() {
     return db.user.findMany({
@@ -76,10 +75,7 @@ async function UsersTable() {
                                     <span className="sr-only">Actions</span>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent>
-                                    <DeleteDropdownItem
-                                        id={user.id}
-                                        disabled={false}
-                                    />
+                                    <DeleteDropdownItem id={user.id} />
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </TableCell>
