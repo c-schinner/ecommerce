@@ -12,13 +12,15 @@ import { OrderInformation } from "./components/OrderInformation";
 type PurchaseReceiptEmailProps = {
     product: {
         name: string;
+        imagePath: string;
+        description: string;
     };
     order: { id: string; createdAt: Date; pricePaidInCents: number };
     downloadVerificationId: string;
 };
 
 PurchaseReceiptEmail.PreviewProps = {
-    product: { name: "Product name" },
+    product: { name: "Product name", imagePath: "", description: "Some Desc." },
     order: {
         id: crypto.randomUUID(),
         createdAt: new Date(),
