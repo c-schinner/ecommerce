@@ -2,6 +2,7 @@ import db from "@/db/db";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { Resend } from "resend";
+import PurchaseReceiptEmail from "@/email/PurchaseReceipt";
 
 // Go to the stripe page and follow the create local listener directions to complete this.
 // Im going to skip for now, because we dont really need this functionality at the moment.
@@ -54,7 +55,13 @@ export async function POST(req: NextRequest) {
             from: `Suport <${process.env.SENDER_EMAIL}>`,
             to: email,
             subject: "Order Confirmation",
-            react: <h1>HI</h1>,
+            react: (
+                <PurchaseReceiptEmail
+                    order={order}
+                    product={product}
+                    downloadVerificationId={downloadVerification.id}
+                />
+            ),
         });
     }
 
