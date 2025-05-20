@@ -3,10 +3,24 @@ import db from "@/db/db";
 import { formatCurrency } from "@/lib/formatters";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+
+// Server action to create download verification
+async function downloadAction(productId: string): Promise<void> {
+    "use server";
+
+    const download = await db.downloadVerification.create({
+        data: {
+            productId,
+            expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24), // 24 hours
+        },
+    });
+
+    redirect(`/products/download/${download.id}`);
+}
 
 export default async function SuccessPage({
     searchParams,
@@ -17,13 +31,13 @@ export default async function SuccessPage({
         searchParams.payment_intent
     );
 
-    if (paymentIntent.metadata.productId == null) return notFound();
+    if (!paymentIntent.metadata.productId) return notFound();
 
     const product = await db.product.findUnique({
         where: { id: paymentIntent.metadata.productId },
     });
 
-    if (product == null) return notFound();
+    if (!product) return notFound();
 
     const isSuccess = paymentIntent.status === "succeeded";
 
@@ -49,34 +63,22 @@ export default async function SuccessPage({
                     <div className="line-clamp-3 text-muted-foreground">
                         {product.description}
                     </div>
-                    <Button className="mt-4" size="lg" asChild>
-                        {isSuccess ? (
-                            <a
-                                href={`/products/download/${await createDownloadVerification(
-                                    product.id
-                                )}`}
-                            >
+
+                    {isSuccess ? (
+                        <form action={downloadAction.bind(null, product.id)}>
+                            <Button className="mt-4" size="lg" type="submit">
                                 Download
-                            </a>
-                        ) : (
-                            <Link href={`/products/${product.id}/purchase`}>
+                            </Button>
+                        </form>
+                    ) : (
+                        <Link href={`/products/${product.id}/purchase`}>
+                            <Button className="mt-4" size="lg">
                                 Try Again
-                            </Link>
-                        )}
-                    </Button>
+                            </Button>
+                        </Link>
+                    )}
                 </div>
             </div>
         </div>
     );
-}
-
-async function createDownloadVerification(productId: string) {
-    return (
-        await db.downloadVerification.create({
-            data: {
-                productId,
-                expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24),
-            },
-        })
-    ).id;
 }
